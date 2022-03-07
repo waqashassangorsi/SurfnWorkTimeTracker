@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>surfnwork</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="stylesheet"
+      href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+      integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
+      crossorigin="anonymous"
+    />
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="bootstrap/css/bootstrap.min.css"
+    />
+    <!-- jQuery library -->
+
+    <script type="text/javascript" src="jquery/jquery-3.5.1.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="bootstrap/js/bootstrap.min.js"
+    />
+<script>
+      var $ = jQuery = require("jquery")
+  </script>
+    <style>
+      .nav-tabs > li.active > a,
+      .nav-tabs > li.active > a:focus,
+      .nav-tabs > li.active > a:hover {
+        color: #fff;
+        font-weight: bold;
+        cursor: default;
+        background-color: #46a9d7;
+        border: 1px solid #ddd;
+        border-bottom-color: transparent;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container text-center">
+      <!--<div class="row">
+        <div class="col-sm-6 col-xs-8">
+          <img src="image/logo.png" width="120px" />
+        </div>
+        <div class="col-sm-6 col-xs-4">
+          <ul type="none" style="margin-top: 12px">
+            <li><i class="fa fa-window-close" style="color: red"></i></li>
+          </ul>
+        </div>
+      </div>-->
+      <div class="row">
+       <!-- <div class="col-sm-12">
+          <p>
+            <span style="font-size: 32px" id="time">00:00:00</span>
+            <sub><span id="todate"></span></sub>
+          </p>
+        </div>
+        <div class="col-xs-12" style="margin-top: 12px">
+          <select
+            style="
+              border: 1px solid gainsboro;
+              padding: 5px;
+              width: 205px;
+              background: white;
+              outline: none;
+              border-radius: 13px;
+              box-shadow: 0 0px 7px 0 rgb(0 0 0 / 20%),
+                0 0px 0px 0 rgb(0 0 0 / 19%);
+            "
+           id='myjobs'>
+            <option>Choose Job</option>
+          </select>
+        </div>--
+        <div class="col-xs-12" style="margin-top: 12px">
+		<div class='timer_started'></div>
+          <button
+            type="button"
+            class="btn" id='play_timer'
+            style="
+              outline: none;
+              color: green;
+              padding: 3px 8px;
+              border-radius: 50%;
+              background: white;
+              font-size: 15px;
+              box-shadow: 0 0px 7px 0 rgb(0 0 0 / 20%),
+                0 0px 0px 0 rgb(0 0 0 / 19%);
+            "
+          >
+            <i class="fa fa-play"></i>
+          </button>
+          <button
+            type="button"
+            class="btn btn-stop"
+            style="
+              outline: none;
+              color: #f44336;
+              padding: 3px 8px;
+              border-radius: 50%;
+              background: white;
+              font-size: 15px;
+              box-shadow: 0 0px 7px 0 rgb(0 0 0 / 20%),
+                0 0px 0px 0 rgb(0 0 0 / 19%);
+            "
+          >
+            <i class="fa fa-stop"></i>
+          </button>
+        </div>-->
+      </div>
+
+      <div class="row" style="margin: 20px">
+        <div class="text-center" style="min-height: 400px">
+          <div class="col-xs-12" style="padding:0px">
+			<button type='button' class="btn btn-small btn-danger pull-right btn-logout" style="padding:2px 4px;"> Logout </button>
+            <p style="color: #30b4dd; font-size: 18px; font-weight: 600">
+              Jobs
+            </p>
+			<div class="clients_jobs" style="text-align:left;height:600px;overflow:auto">
+			
+			</div>
+          </div>
+          <!--<div class="col-xs-6">
+            <p style="color: #30b4dd; font-size: 18px; font-weight: 600">
+              Last Online
+            </p>
+            <div class="last_online">
+			
+			</div>
+          </div>-->
+        </div>
+      </div>
+      <div class="row" style="margin-top: 15px">
+        <div>
+          <a
+            href="jobstats.html"
+            class="btn"
+            style="
+              color: 46a9d7;
+              border: 1px solid white;
+              background-color: white;
+              outline: none;
+              padding: 3px 26px;
+            "
+            ><i class="fa fa-home"></i> Back to Home</a
+          >
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+   $(document).ready(function(){
+   //setInterval('updateClock()', 1000);
+   var seconds_worked = 0;
+   var timerVar; var screencapture;
+   var d = new Date();
+  var strDate = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
+  $("#todate").html(strDate);
+	var userid = localStorage.getItem("u_id");
+	var auth=localStorage.getItem("auth");
+	var totalSeconds = localStorage.getItem(userid+"option_"+localStorage.getItem("current_job"));
+	console.log("totalSeconds -- " + totalSeconds)
+	 setInterval(continue_time,1000);
+	function continue_time(){
+		if(localStorage.getItem("working")== "yes"){
+		 localStorage.setItem(userid+"option_"+localStorage.getItem("current_job"),++totalSeconds);
+		}
+	}
+	
+	const { ipcRenderer } = require('electron')
+	console.log('Current Job',localStorage.getItem("current_job"));
+	function getIdle(){
+	
+		 ipcRenderer.invoke('get_idle', '').then((result) => {
+			console.log(' Idle ' + result);
+			if(result >= 30){
+				clearInterval(timerVar);
+				clearInterval(screencapture);
+				clearInterval(idlestate);
+				clearInterval(total_hours);
+				$('#play_timer').addClass('play_timer');
+				$('.timer_started').html('<p style="color:red"><b>Not Working...</b> </p>');
+				localStorage.setItem("working","no")
+				alert('You are not Working!');
+				
+				var today = new Date();
+				var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+				var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+				var dateTime = date+' '+time;
+				
+				<!-- logobject.endTime = dateTime; -->
+				<!-- LogsArray.push(logobject); -->
+				<!-- console.log(LogsArray); -->
+				var working_job = localStorage.getItem("current_job");
+				var starttime = localStorage.getItem("start_time"+working_job);
+				localStorage.setItem("pause_time"+working_job,dateTime);
+				var LogsArray = [{start_time:starttime,u_id:userid,job_id:working_job,endTime:dateTime}];
+				var auth=localStorage.getItem("auth");
+				var jsondata = new FormData();
+				jsondata.append("logs", JSON.stringify(LogsArray));
+			   $.ajax({
+				   url:"https://surfnwork.com/Authentication/save_logs",
+				   type:"post",
+					cache: false,
+					contentType:false,
+					processData:false,
+					dataType: "json",
+					headers: {
+						'Auth': auth
+					},
+					data:jsondata,
+					success:function(reponse){
+						if(reponse.status){
+							LogsArray = [];
+							logobject = {};
+						 }
+					   }
+					 });		
+				
+			}
+		});
+		
+	}
+	var idlestate; var total_hours;
+	if(localStorage.getItem("working")== "yes"){
+		 idlestate = setInterval(getIdle,1000);
+		 total_hours =  setInterval(save_total_hr_work,10000);
+		 
+		 $('#stop_timer').addClass('btn-stop');
+	}
+	
+	function save_total_hr_work(){
+  
+		var jsondata = new FormData();
+			jsondata.append("job_id", localStorage.getItem("current_job")); 
+			jsondata.append("time_worked", totalSeconds); 
+			var auth=localStorage.getItem("auth");
+			$.ajax({
+				url: "https://surfnwork.com/Authentication/start_job", 
+				type: 'POST',
+				contentType:false,
+				processData:false,
+				cache: false,
+				headers: {
+                'Auth': auth
+				},
+				dataType: "json",
+				data: jsondata,
+				success: function (reponse) { 
+					seconds_worked = 0;
+				}
+			});
+  
+  }
+	
+  //api calls	
+	var result1="";
+	var result2="";
+	var lastoneline="";
+	  $.when(
+			<!-- $.ajax({ -->
+				<!-- url: "https://surfnwork.com/Authentication/get_jobs",  -->
+				<!-- type: 'POST', -->
+				<!-- cache: false, -->
+				<!-- contentType:false, -->
+				<!-- processData:false, -->
+				<!-- dataType: "json", -->
+			   <!-- headers: { -->
+						<!-- 'Auth': auth -->
+					<!-- }, -->
+				<!-- success: function (reponse) {  -->
+				
+			  <!-- if(reponse.status){ -->
+			  <!-- console.log(reponse); -->
+			  <!-- var jobs=reponse.data; -->
+				
+				<!-- for (var i=0; i<jobs.length; i++) { -->
+				  <!-- var single=jobs[i]; -->
+				  <!-- result1 +='<option value="' + single.job_id + '">' + single.job_title+ '</option>'; -->
+				  
+				<!-- } -->
+			  <!-- }else{ -->
+				<!-- alert(reponse.message); -->
+			  <!-- } -->
+			   
+				<!-- }  -->
+		 
+			  <!-- }), -->
+
+			$.ajax({
+				url: "https://surfnwork.com/Authentication/get_jobs", 
+				type: 'POST',
+				cache: false,
+				contentType:false,
+				processData:false,
+				dataType: "json",
+			   headers: {
+						'Auth': auth
+					},
+				beforeSend:function(){
+					$('.clients_jobs').html('<p class="text-center"><i class="fa fa-spin fa-spinner"></i></p>');
+					
+				},
+				success: function (reponse) { 
+			
+					
+				  if(reponse.status){
+					var jobs=reponse.data;
+					console.log(jobs);
+					for(var i=0;i<jobs.length;i++){
+					var single = jobs[i]
+					
+					//<span style="background: red;padding: 4px 6px;color: white;border-radius: 50%;margin-right: 11px;/* width: 24px; *//* height: 24px; */">1</span>
+					
+					 result2 +='<p style="text-overflow: ellipsis;width: 100%;white-space: nowrap;overflow: hidden;border-bottom: 1px solid gainsboro;padding-bottom: 10px;"><a href="#" data-clientname="'+single.job_title+'" data-jid="'+single.job_id+'" data-juid="'+single.u_id+'" style="color: black; text-decoration: none" class="open_chat"><strong>'+single.job_title+'</strong></a></p>';
+					 }
+					<!-- for(var i=0;i<clients.length;i++){ -->
+					  <!-- var client = clients[i]; -->
+					  <!-- result2 += '<p style="text-overflow: ellipsis;width: 100%;white-space: nowrap;overflow: hidden;"><a href="#" data-clientname="'+client.f_name+' '+client.l_name+'" data-uid="'+client.u_id+'" style="color: black; text-decoration: none" class="open_chat"><span style="background: red;padding: 4px 6px;color: white;border-radius: 50%;margin-right: 11px;/* width: 24px; *//* height: 24px; */">1</span><strong>'+client.f_name+' '+client.l_name+'</strong></a></p>'; -->
+					  <!-- lastoneline += "<p><strong> 2Hrs Ago </strong></p>"; -->
+					<!-- } -->
+					
+					
+				  
+				  }else{
+					alert(reponse.message);
+				  }
+			   
+				} 
+		 
+			  })
+
+		).then(function() {
+			//$('#myjobs').html(result1);
+			$('.clients_jobs').html(result2);
+			//$('.last_online').html(lastoneline);
+		});
+	  
+	  $(document).on('click','.open_chat',function(e){
+		e.preventDefault();
+		var job_id = $(this).attr('data-jid');
+		var juid = $(this).attr('data-juid');
+		var clientname = $(this).attr('data-clientname');
+		localStorage.setItem('job_id',job_id);
+		localStorage.setItem('juid',juid);
+		localStorage.setItem('clientname',clientname);
+		window.location.href = 'chatdata.html';
+	  });
+	  
+	  var current_job = localStorage.getItem("current_job");
+	  
+	  if(localStorage.getItem(userid+"option_"+current_job) == "null"){
+			totalSeconds = 0;
+			$("#time").html("00:00:00")
+		}else{
+			totalSeconds = localStorage.getItem(userid+"option_"+current_job);
+			if(localStorage.getItem("working")== "no"){
+				var hour = Math.floor(totalSeconds /3600);
+			   var minute = Math.floor((totalSeconds - hour*3600)/60);
+			   var seconds = totalSeconds - (hour*3600 + minute*60);
+			   if(hour < 10)
+				 hour = "0"+hour;
+			   if(minute < 10)
+				 minute = "0"+minute;
+			   if(seconds < 10)
+				 seconds = "0"+seconds;
+			  // document.getElementById("time").innerHTML = hour + ":" + minute + ":" + seconds;
+			  }else{
+				$('.timer_started').html('<p style="color:green"><b>Working</b> </p>');
+				screencapture = setInterval(take_screenshot, 5000);
+				timerVar = setInterval(countTimer, 1000);
+				
+			  }
+		}
+		
+		$(document).on('click','.btn-logout',function(){
+		localStorage.clear();
+		window.location.href= "login.html";
+	});
+	  
+//api calls
+	var playing = true;
+	$(document).on('click','.play_timer',function(){
+	$('.timer_started').html('<p style="color:green"><b>Working</b> </p>');
+			screencapture = setInterval(take_screenshot, 5000);
+			timerVar = setInterval(countTimer, 1000);
+			$(this).removeClass('play_timer');
+	});
+	
+	$(document).on('click','.btn-stop',function(){
+		$('.timer_started').html('<p style="color:red"><b>Not Working</b> </p>');
+		clearInterval(timerVar);
+		clearInterval(screencapture);
+		$(this).siblings('button').addClass('play_timer');
+	
+	});
+	
+	$(document).on('focus','#myjobs',function(){
+			var previous = $(this).val();
+			console.log('previous' + previous)
+			
+			var key  = userid+"option_"+previous;
+			localStorage.setItem(key,totalSeconds);
+			
+	});
+	
+    $(document).on('change','#myjobs',function(){
+      var vals=$(this).val();
+		clearInterval(timerVar);
+		clearInterval(screencapture);
+		//$("#time").html("00:00:00");
+		$('.timer_started').html('<p style="color:darkblue"><b>Start Working</b> </p>');
+		$('#play_timer').addClass('play_timer');
+		console.log(localStorage.getItem(userid+"option_"+vals));
+		if(localStorage.getItem(userid+"option_"+vals) == "null"){
+			totalSeconds = 0;
+			$("#time").html("00:00:00")
+		}else{
+			totalSeconds = localStorage.getItem(userid+"option_"+vals);
+			var hour = Math.floor(totalSeconds /3600);
+           var minute = Math.floor((totalSeconds - hour*3600)/60);
+           var seconds = totalSeconds - (hour*3600 + minute*60);
+           if(hour < 10)
+             hour = "0"+hour;
+           if(minute < 10)
+             minute = "0"+minute;
+           if(seconds < 10)
+             seconds = "0"+seconds;
+           document.getElementById("time").innerHTML = hour + ":" + minute + ":" + seconds;
+		}
+var auth=localStorage.getItem("auth");
+       $.ajax({
+           url:"https://surfnwork.com/Authentication/job_stats",
+           type:"post",
+           data:vals,
+             cache: false,
+        contentType:false,
+        processData:false,
+        dataType: "json",
+       headers: {
+                'Auth': auth
+            },
+           success:function(reponse)
+           {
+              if(reponse.status){
+				var jobs= reponse.data.jobs_logs 
+				var userdetail=reponse.data.jobs_stats;
+				$('#totalhour').html(userdetail.total_hours_worked);
+				 $('#ideltime').html(userdetail.idle_time);
+
+				 for (var i=0; i<jobs.length; i++) {
+					var single=jobs[i];
+					$('#jobstart').html(single.job_started);
+					$('#jobspased').html(single.job_paused);
+					 $('#jobsidle').html(single.idle);
+					 $('#job_paused').html(single.job_paused);
+				  }
+				
+			  }else{
+				alert('no');
+			  }
+           }
+       });
+    });
+
+});
+
+function updateClock (){
+  var currentTime = new Date ( );
+    var currentHours = currentTime.getHours ( );
+    var currentMinutes = currentTime.getMinutes ( );
+    var currentSeconds = currentTime.getSeconds ( );
+
+    // Pad the minutes and seconds with leading zeros, if required
+    currentMinutes = ( currentMinutes < 10 ? "0" : "" ) + currentMinutes;
+    currentSeconds = ( currentSeconds < 10 ? "0" : "" ) + currentSeconds;
+
+    // Choose either "AM" or "PM" as appropriate
+    var timeOfDay = ( currentHours < 12 ) ? "AM" : "PM";
+
+    // Convert the hours component to 12-hour format if needed
+    currentHours = ( currentHours > 12 ) ? currentHours - 12 : currentHours;
+
+    // Convert an hours component of "0" to "12"
+    currentHours = ( currentHours == 0 ) ? 12 : currentHours;
+
+    // Compose the string for display
+    var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds + " " + timeOfDay;
+    
+    
+    //$("#time").html(currentTimeString);      
+ }
+ 
+ function take_screenshot(){
+	var screenshot = require('screenshot-desktop');
+	var fs = require('fs');
+	var path = require('path');
+	//var form = require('form-data');
+	
+	const imgpath = "screenshots/screenshot"+Date.now() + '.png';
+	screenshot({ filename: imgpath }).then((imgpath) => {
+	
+			var blobObject = blobCreationFromURL(imgpath); 
+			var image;
+			getBase64Image(imgpath, function(base64image){
+				// console.log(base64image);
+				 image = base64image;
+					var jsondata = new FormData();
+					jsondata.append("data", base64image); 
+					jsondata.append("job_id", localStorage.getItem("current_job")); 
+		  
+					$.ajax({
+						url: "https://surfnwork.com/Authentication/upload_pic", 
+						type: 'POST',
+						contentType:false,
+						processData:false,
+						cache: false,
+						dataType: "json",
+						data: jsondata,
+						success: function (reponse) { 
+						
+						}
+					});
+			});
+			
+			
+	  
+	});
+ 
+}
+ 
+
+var totalSeconds = 0;
+function countTimer() {
+           ++totalSeconds;
+           var hour = Math.floor(totalSeconds /3600);
+           var minute = Math.floor((totalSeconds - hour*3600)/60);
+           var seconds = totalSeconds - (hour*3600 + minute*60);
+           if(hour < 10)
+             hour = "0"+hour;
+           if(minute < 10)
+             minute = "0"+minute;
+           if(seconds < 10)
+             seconds = "0"+seconds;
+           //document.getElementById("time").innerHTML = hour + ":" + minute + ":" + seconds;
+       }
+  </script>
+</html>

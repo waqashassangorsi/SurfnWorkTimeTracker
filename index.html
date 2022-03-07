@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World!</title>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' 'unsafe-inline';"
+    />
+  </head>
+  <body style="background: white">
+    <h1>Hello World!</h1>
+    <p>
+      We are using node
+      <script>
+        document.write(process.versions.node);
+      </script>
+      , Chrome
+      <script>
+        document.write(process.versions.chrome);
+      </script>
+      , and Electron
+      <script>
+        document.write(process.versions.electron);
+      </script>
+      .
+    </p>
+  </body>
+  <script>
+    const { powerMonitor } = require("electron");
+    const idle = powerMonitor.getSystemIdleTime(); // it returns in seconds when I am writing this
+    console.log("Current System Idle Time - ", idle);
+
+    setInterval(function () {
+      const idle = powerMonitor.getSystemIdleTime(); // it returns in seconds when I am writing this
+      console.log("Current System Idle Time - ", idle);
+    }, 1000);
+  </script>
+  <script>
+    require("./menu.js");
+  </script>
+</html>

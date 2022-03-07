@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>surfnwork</title>
+
+<script>
+      var $ = jQuery = require("jquery")
+  </script>
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
+<!-- jQuery library -->
+
+
+<script type="text/javascript" src="jquery/jquery-3.5.1.min.js"></script>
+
+
+<!-- Latest compiled JavaScript -->
+
+<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+<!-- 
+<link rel="stylesheet" type="text/css" href="bootstrap/js/bootstrap.min.js">
+ -->
+</script>
+<link
+      rel="stylesheet"
+      href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+      integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
+      crossorigin="anonymous"
+    />
+</head>
+
+<style type="text/css">
+	.text_heading
+	{
+		text-align: center;
+		color: #236196
+	}
+
+	.skipbtn
+	{
+		margin-top: 10px;
+	}
+
+	.center_image
+	{
+		margin: auto;
+	}
+	.nextbtn
+	{
+		background: #5BC0DE;
+		color: #fff;
+		border: none;
+		box-shadow:1px 1px 5px 1px #8080804f;
+		padding-left: 27px;
+	    padding-top: 4px;
+	    padding-right: 31px;
+	    border-radius: 5px;
+	    padding-bottom: 4px;
+
+	}
+.submitdiv
+{
+	margin:auto;
+	text-align: center; 
+		margin-top: 88px;
+
+
+}
+
+.emaildata
+{
+	border-top:none;
+	border-left: none;
+	border-right: none;
+	box-shadow: none;
+}
+
+.formdata
+{
+	padding: 27px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+    margin-top: 48px;
+}
+.main_cont
+{
+max-width: 398px;
+
+}
+
+.imgrow
+{
+	margin-top: 43%;
+}
+</style>
+<body>
+ <div class="container main_cont">
+ 	
+ 	<div class="row imgrow">
+ 		<div class="col-sm-12">
+ 			<img class="img-responsive center_image" src="image/logo.png">
+ 		</div>
+ 	</div>
+ 	
+ 	<div class="row formdata">
+ 		<div class="col-sm-12">
+ 			
+			<form id="submitform">
+				  <div class="form-group">
+				   <!--  <label for="email">Email address:</label> -->
+				    <input type="email" required name="email" class="form-control emaildata" id="email" placeholder="Email">
+				  </div>
+				  <div class="form-group">
+				    <!-- <label for="pwd">Password:</label> -->
+				    <input type="password" required name="pass" class="form-control emaildata" id="pass" placeholder="Password">
+				  </div>
+				  <div class="form-group submitdiv">
+				  <!-- <button type="submit" class="btn btn-default nextbtn">Log in</button> -->
+
+				 <!-- <a href="jobstats.html" class="btn btn-default nextbtn" >Log in</a>  -->
+				 <button type="button"  name='click'  id="loginbtn">Login</button> 
+				 <!---onclick="submitForm()"-->
+				</div>
+			</form>
+			
+ 		</div>
+ 	</div>
+ </div>
+ <script>
+	const axios = require("axios");	
+	
+	
+	$('.emaildata').val(localStorage.getItem("username"));
+	$('#pass').val(localStorage.getItem("password"));
+	// function submitForm() {
+		
+	//   axios
+	// 	.post("http://ranaentp.net/khadim/Authentication/login_user", {
+	// 	  formData,
+	// 	})
+	// 	.then((res) => {
+	// 	  console.log(JSON.stringify(res));
+	// 	});
+	// }
+
+       $(document).on('click','#loginbtn',(function(e){
+        
+		localStorage.setItem("username",$('.emaildata').val());
+		localStorage.setItem("password", $('#pass').val());
+		
+       //e.preventDefault();
+       //e.stopImmediatePropagation();
+     
+      var formData = new FormData($('#submitform')[0]);
+     var ele=$(this);
+       if(confirm('I agree to the terms of condition of Surf n Work Time tracker application. Going against the SOPs of the time tracker application may lead to the disputes')){
+	   
+      $.ajax({
+        url: "https://surfnwork.com/Authentication/login_user", 
+        type: 'POST',
+        data: formData,
+        contentType:false,
+        processData:false,
+        cache: false,
+        dataType: "json",
+        beforeSend:function(){
+         ele.html('Processing <i class="fa fa-spinner fa-spin "></i>');
+        },
+        success: function (reponse) { 
+		ele.html('Login');
+        
+     	if(reponse.status){
+			//localStorage.clear();
+     		var userdetail=reponse.data;
+     		localStorage.setItem("u_id", userdetail.u_id);
+     		localStorage.setItem("auth", userdetail.auth);
+     		localStorage.setItem("f_name", userdetail.f_name);
+     		localStorage.setItem("hour_rate", userdetail.hourly_rate);
+     		localStorage.setItem("l_name", userdetail.l_name);
+     		window.location.href = "jobstats.html";
+     	}else{
+     		alert(reponse.message);
+     	}
+       
+        } 
+ 
+      });
+	}
+    }));
+     
+
+		
+	
+  </script>
+</body>
+
+</html>
